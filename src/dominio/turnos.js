@@ -44,7 +44,17 @@ function crearAgenda() {
     return { ...turno };
   }
 
-  return { listar, horariosLibres, reservar, cancelar };
+  function resumen() {
+    const activos = turnos.filter((t) => t.estado === 'activo').length;
+    return {
+      total: turnos.length,
+      activos,
+      cancelados: turnos.length - activos,
+      libres: HORARIOS.length - activos
+    };
+  }
+
+  return { listar, horariosLibres, reservar, cancelar, resumen };
 }
 
 module.exports = { crearAgenda, HORARIOS };
