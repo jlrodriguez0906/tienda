@@ -1,0 +1,7 @@
+# Reglas del equipo para el contrato OpenAPI (Spectral).
+extends: ["spectral:oas"]
+rules:
+  operation-description: error
+  operation-operationId: error
+  operation-tags: error
+  info-contact: warn

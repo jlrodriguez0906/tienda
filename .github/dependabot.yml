@@ -1,0 +1,11 @@
+# Revisión programada de dependencias y de versiones de las acciones del pipeline.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

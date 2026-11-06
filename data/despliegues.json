@@ -1,0 +1,11 @@
+{
+  "_nota": "Datos ILUSTRATIVOS para calcular métricas tipo DORA. Reemplazar por los eventos reales del proyecto.",
+  "periodoDias": 28,
+  "despliegues": [
+    { "commit": "2026-10-05T09:00:00Z", "despliegue": "2026-10-05T15:00:00Z", "fallo": false, "correccion": false },
+    { "commit": "2026-10-08T10:00:00Z", "despliegue": "2026-10-09T10:00:00Z", "fallo": true,  "correccion": false, "recuperado": "2026-10-09T14:00:00Z" },
+    { "commit": "2026-10-09T13:00:00Z", "despliegue": "2026-10-09T16:00:00Z", "fallo": false, "correccion": true },
+    { "commit": "2026-10-14T08:00:00Z", "despliegue": "2026-10-15T08:00:00Z", "fallo": false, "correccion": false },
+    { "commit": "2026-10-20T11:00:00Z", "despliegue": "2026-10-21T09:00:00Z", "fallo": false, "correccion": false }
+  ]
+}

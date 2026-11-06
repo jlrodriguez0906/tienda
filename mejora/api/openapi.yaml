@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+  title: Turnos en línea
+  description: API mínima para reservar y cancelar turnos de atención.
+  version: 0.1.0
+  contact:
+    name: Equipo de Turnos en línea
+servers:
+  - url: http://localhost:3000
+    description: Entorno local
+tags:
+  - name: turnos
+    description: Reserva y cancelación de turnos
+paths:
+  /turnos:
+    get:
+      tags: [turnos]
+      operationId: listarTurnos
+      summary: Lista todos los turnos
+      description: Devuelve los turnos registrados, activos y cancelados.
+      responses:
+        '200':
+          description: Lista de turnos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Turno'
+    post:
+      tags: [turnos]
+      operationId: reservarTurno
+      summary: Reserva un turno
+      description: Crea un turno activo en un horario libre.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NuevoTurno'
+      responses:
+        '201':
+          description: Turno creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Turno'
+        '400':
+          description: Datos no válidos u horario ocupado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /turnos/{id}:
+    delete:
+      tags: [turnos]
+      operationId: cancelarTurno
+      summary: Cancela un turno
+      description: Marca el turno como cancelado y libera su horario.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identificador numérico del turno
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Turno cancelado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Turno'
+        '404':
+          description: El turno no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /horarios:
+    get:
+      tags: [turnos]
+      operationId: listarHorariosLibres
+      summary: Lista los horarios libres
+      description: Devuelve los horarios que todavía se pueden reservar.
+      responses:
+        '200':
+          description: Lista de horarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: '09:00'
+  /resumen:
+    get:
+      tags: [turnos]
+      operationId: consultarResumen
+      summary: Resume la ocupación de la agenda
+      description: Devuelve cuántos turnos hay, cuántos están activos, cuántos cancelados y cuántos horarios quedan libres.
+      responses:
+        '200':
+          description: Resumen de la agenda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resumen'
+  /salud:
+    get:
+      tags: [turnos]
+      operationId: consultarSalud
+      summary: Consulta el estado del servicio
+      description: Devuelve el estado, la versión y el commit desplegado. La usan Render y el pipeline para comprobar el despliegue.
+      responses:
+        '200':
+          description: El servicio está en funcionamiento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salud'
+components:
+  schemas:
+    Resumen:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 3
+        activos:
+          type: integer
+          example: 2
+        cancelados:
+          type: integer
+          example: 1
+        libres:
+          type: integer
+          example: 2
+    Salud:
+      type: object
+      properties:
+        estado:
+          type: string
+          example: ok
+        version:
+          type: string
+          example: 0.1.0
+        commit:
+          type: string
+          example: local
+    NuevoTurno:
+      type: object
+      required: [nombre, hora]
+      properties:
+        nombre:
+          type: string
+          example: Ana
+        hora:
+          type: string
+          example: '09:00'
+    Turno:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: Ana
+        hora:
+          type: string
+          example: '09:00'
+        estado:
+          type: string
+          enum: [activo, cancelado]
+        codigo:
+          type: string
+          example: T-0900
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: El horario ya está reservado

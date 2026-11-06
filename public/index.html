@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Turnos en línea</title>
+  <link rel="stylesheet" href="/estilos.css">
+</head>
+<body>
+  <main>
+    <h1>Turnos en línea</h1>
+    <p class="sub">Reserve su turno de atención.</p>
+
+    <form id="formulario">
+      <label>Nombre
+        <input id="nombre" required autocomplete="off">
+      </label>
+      <label>Horario
+        <select id="hora" required></select>
+      </label>
+      <button type="submit">Reservar</button>
+    </form>
+    <p id="mensaje" role="status"></p>
+
+    <h2>Turnos registrados</h2>
+    <ul id="lista"></ul>
+  </main>
+  <footer id="pie">Cargando versión…</footer>
+  <script src="/app.js"></script>
+</body>
+</html>

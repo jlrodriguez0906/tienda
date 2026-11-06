@@ -1,0 +1,48 @@
+name: CD
+
+# EVENTO: se ejecuta cuando el workflow "CI" termina sobre la rama main.
+# No se dispara con los PR: solo con lo que ya llegó a main.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+# PERMISOS MÍNIMOS: este workflow solo lee el código; para desplegar usa el secreto del entorno.
+permissions:
+  contents: read
+
+# Un solo despliegue a la vez; si llega otro, espera su turno (no se cancela el que está en curso).
+concurrency:
+  group: despliegue-produccion
+  cancel-in-progress: false
+
+jobs:
+  desplegar:
+    name: desplegar
+    # PUERTA DE ENTRADA: solo si el CI terminó bien, fue por un push (no por el horario semanal)
+    # y ya existe la variable URL_PRODUCCION (mientras no exista, el despliegue se omite).
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      vars.URL_PRODUCCION != ''
+    runs-on: ubuntu-latest
+    # ENTORNO: aquí viven el secreto del deploy hook y las reglas de aprobación opcionales.
+    environment:
+      name: produccion
+      url: ${{ vars.URL_PRODUCCION }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Pedir el despliegue a Render
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: curl --fail-with-body --silent --show-error -X POST "$RENDER_DEPLOY_HOOK"
+
+      - name: Prueba de humo
+        env:
+          URL_PRODUCCION: ${{ vars.URL_PRODUCCION }}
+          COMMIT_ESPERADO: ${{ github.event.workflow_run.head_sha }}
+        run: bash scripts/prueba-de-humo.sh

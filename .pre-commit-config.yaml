@@ -1,0 +1,16 @@
+# Hooks locales (framework pre-commit): se ejecutan al hacer "git commit".
+# Instalación: pip install pre-commit   y luego   pre-commit install
+repos:
+  - repo: local
+    hooks:
+      - id: lint
+        name: lint (ESLint)
+        entry: npm run lint
+        language: system
+        pass_filenames: false
+        types: [javascript]
+      - id: secretos
+        name: escaneo de secretos
+        entry: npm run secretos
+        language: system
+        pass_filenames: false

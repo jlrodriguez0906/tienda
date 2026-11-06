@@ -1,0 +1,67 @@
+name: CI
+
+# EVENTO: cuándo se ejecuta el pipeline
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'   # cada lunes: aparecen vulnerabilidades nuevas con el tiempo
+
+# PERMISOS MÍNIMOS: el token del workflow solo puede leer el código
+permissions:
+  contents: read
+
+jobs:
+  # PUERTA 1 · Formato y lint (la más rápida, va primero)
+  calidad:
+    name: calidad
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  # PUERTAS 2 y 3 · Pruebas (incluye la función de aptitud y el contrato) y cobertura mínima
+  pruebas:
+    name: pruebas
+    needs: calidad
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - run: npm run cobertura
+
+  # PUERTA 5 · Secretos y dependencias vulnerables
+  seguridad:
+    name: seguridad
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run secretos
+      - run: npm run auditoria
+
+  # PUERTA 6 · Contrato OpenAPI y documentación
+  contrato:
+    name: contrato
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run contrato
+      - run: npm run docs

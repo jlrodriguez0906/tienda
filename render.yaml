@@ -1,0 +1,12 @@
+# Blueprint de Render: describe el servicio web como código.
+# El despliegue NO se dispara solo con cada commit (autoDeployTrigger: off):
+# lo pide el workflow CD de GitHub Actions cuando el CI terminó bien.
+services:
+  - type: web
+    name: turnos-en-linea
+    runtime: node
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /salud
+    autoDeployTrigger: off

@@ -1,0 +1,28 @@
+{
+  "name": "turnos-pipeline",
+  "version": "0.1.0",
+  "description": "Turnos en línea: proyecto base para practicar un pipeline de CI con quality gates (Sesión 10)",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/app.js",
+    "lint": "eslint .",
+    "test": "node --test --test-reporter=spec \"tests/**/*.test.js\"",
+    "cobertura": "node --test --test-reporter=spec --experimental-test-coverage --test-coverage-lines=90 --test-coverage-include=\"src/**\" \"tests/**/*.test.js\"",
+    "secretos": "node scripts/escanear-secretos.js",
+    "auditoria": "npm audit --audit-level=high",
+    "contrato": "spectral lint api/openapi.yaml --ruleset .spectral.yaml --fail-severity=warn",
+    "docs": "redocly build-docs api/openapi.yaml --output docs-generada/index.html",
+    "dora": "node scripts/dora.js",
+    "verificar": "npm run lint && npm run cobertura && npm run secretos && npm run contrato"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@redocly/cli": "^2.76.0",
+    "@stoplight/spectral-cli": "^6.11.0",
+    "eslint": "^9.0.0"
+  }
+}
