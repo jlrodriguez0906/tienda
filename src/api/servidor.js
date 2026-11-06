@@ -49,6 +49,9 @@ function crearServidor() {
         // RENDER_GIT_COMMIT lo define Render con el commit desplegado; en local vale "local".
         return responder(res, 200, { estado: 'ok', version, commit: process.env.RENDER_GIT_COMMIT || 'local' });
       }
+      if (req.method === 'GET' && url.pathname === '/resumen') {
+        return responder(res, 200, agenda.resumen());
+      }
       if (req.method === 'GET' && url.pathname === '/turnos') {
         return responder(res, 200, agenda.listar());
       }

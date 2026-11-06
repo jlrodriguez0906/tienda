@@ -93,6 +93,19 @@ paths:
                 items:
                   type: string
                   example: '09:00'
+  /resumen:
+    get:
+      tags: [turnos]
+      operationId: consultarResumen
+      summary: Resume la ocupación de la agenda
+      description: Devuelve cuántos turnos hay, cuántos están activos, cuántos cancelados y cuántos horarios quedan libres.
+      responses:
+        '200':
+          description: Resumen de la agenda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resumen'
   /salud:
     get:
       tags: [turnos]
@@ -108,6 +121,21 @@ paths:
                 $ref: '#/components/schemas/Salud'
 components:
   schemas:
+    Resumen:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 3
+        activos:
+          type: integer
+          example: 2
+        cancelados:
+          type: integer
+          example: 1
+        libres:
+          type: integer
+          example: 2
     Salud:
       type: object
       properties:

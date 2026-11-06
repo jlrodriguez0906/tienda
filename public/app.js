@@ -42,13 +42,19 @@ async function cargarTurnos() {
   }
 }
 
+async function cargarResumen() {
+  const r = await pedir('/resumen');
+  document.getElementById('resumen').textContent =
+    'Horarios libres: ' + r.libres + ' · Turnos activos: ' + r.activos + ' · Cancelados: ' + r.cancelados;
+}
+
 async function cargarPie() {
   const salud = await pedir('/salud');
   document.getElementById('pie').textContent = 'Versión ' + salud.version + ' · commit ' + salud.commit.slice(0, 7);
 }
 
 async function refrescar() {
-  await Promise.all([cargarHorarios(), cargarTurnos()]);
+  await Promise.all([cargarHorarios(), cargarTurnos(), cargarResumen()]);
 }
 
 async function accion(operacion) {
