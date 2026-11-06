@@ -1,6 +1,6 @@
 {
   "name": "turnos-pipeline",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Turnos en línea: proyecto base para practicar un pipeline de CI con quality gates (Sesión 10)",
   "private": true,
   "license": "UNLICENSED",
